@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface CourseProgressRepository extends JpaRepository<CourseProgress, UUID> {
     Optional<CourseProgress> findByStudentAndCourse(User student, Course course);
+    Optional<CourseProgress> findByCourseAndStudent(Course course, User student);
     List<CourseProgress> findByStudent(User student);
     List<CourseProgress> findByCourse(Course course);
 }

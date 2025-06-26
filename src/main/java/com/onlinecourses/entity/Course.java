@@ -35,6 +35,9 @@ public class Course {
     @Builder.Default
     private List<Topic> topics = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseProgress> courseProgresses = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

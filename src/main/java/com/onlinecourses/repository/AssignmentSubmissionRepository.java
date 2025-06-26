@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface AssignmentSubmissionRepository extends JpaRepository<AssignmentSubmission, UUID> {
     List<AssignmentSubmission> findByAssignmentSection(AssignmentSection assignmentSection);
     Optional<AssignmentSubmission> findByStudentAndAssignmentSection(User student, AssignmentSection assignmentSection);
+    Optional<AssignmentSubmission> findByAssignmentSectionAndStudent(AssignmentSection section, User student);
 }

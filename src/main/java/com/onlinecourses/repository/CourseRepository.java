@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface CourseRepository extends JpaRepository<Course, UUID> {
     List<Course> findByCreator(User creator);
     List<Course> findAllByOrderByCreatedAtDesc();
+    List<Course> findAllByCreator(User creator);
 }
