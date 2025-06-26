@@ -2,6 +2,8 @@ package com.onlinecourses.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,5 +30,22 @@ public class User {
 
     private boolean creatorRequested;
 
-    private String authToken; // UUID токен
+    private String authToken;
+
+    // Relations
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Course> createdCourses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CourseProgress> courseProgresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<TestResult> testResults = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AssignmentSubmission> assignmentSubmissions = new ArrayList<>();
 }
