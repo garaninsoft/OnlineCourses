@@ -97,6 +97,22 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
+    @PatchMapping("/users/{id}/promote")
+    public ResponseEntity<Void> promoteToCreator(@AuthenticationPrincipal User admin, @PathVariable UUID id) {
+        if (admin.getRole() != Role.ADMIN) {
+            return ResponseEntity.status(403).build();
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(Role.CREATOR);
+        user.setCreatorRequested(false);
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/creators")
     public ResponseEntity<List<Map<String, Object>>> getAllCreators(@AuthenticationPrincipal User admin) {
         if (admin.getRole() != Role.ADMIN) {

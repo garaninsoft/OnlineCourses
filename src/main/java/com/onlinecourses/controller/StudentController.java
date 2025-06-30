@@ -8,6 +8,7 @@ import com.onlinecourses.entity.User;
 import com.onlinecourses.repository.CourseProgressRepository;
 import com.onlinecourses.repository.CourseRepository;
 import com.onlinecourses.repository.TopicRepository;
+import com.onlinecourses.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ public class StudentController {
     private final CourseRepository courseRepository;
     private final CourseProgressRepository courseProgressRepository;
     private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/courses")
     public ResponseEntity<?> getAvailableCourses() {
@@ -114,5 +116,12 @@ public class StudentController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/request-creator")
+    public ResponseEntity<Void> requestCreator(@AuthenticationPrincipal User user) {
+        user.setCreatorRequested(true);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 }

@@ -18,6 +18,7 @@ public class CreatorController {
     private final CourseRepository courseRepository;
     private final CourseProgressRepository courseProgressRepository;
 
+    // 🔹 Получение всех курсов криэйтора (с доп. данными)
     @GetMapping("/courses")
     public ResponseEntity<?> getMyCourses(@AuthenticationPrincipal User user) {
         if (user.getRole() != Role.CREATOR) {
@@ -30,6 +31,7 @@ public class CreatorController {
                     map.put("id", course.getId());
                     map.put("title", course.getTitle());
                     map.put("description", course.getDescription());
+                    map.put("topicsCount", course.getTopics().size());
                     map.put("studentsCount", course.getCourseProgresses().size());
                     return map;
                 })
@@ -38,6 +40,26 @@ public class CreatorController {
         return ResponseEntity.ok(courses);
     }
 
+    // 🔹 Создание нового курса
+    @PostMapping("/courses")
+    public ResponseEntity<?> createCourse(@AuthenticationPrincipal User user,
+                                          @RequestBody Map<String, String> body) {
+        if (user.getRole() != Role.CREATOR) {
+            return ResponseEntity.status(403).build();
+        }
+
+        Course course = Course.builder()
+                .title(body.getOrDefault("title", ""))
+                .description(body.getOrDefault("description", ""))
+                .creator(user)
+                .build();
+
+        courseRepository.save(course);
+
+        return ResponseEntity.ok(Map.of("id", course.getId()));
+    }
+
+    // 🔹 Список студентов, записанных на курс
     @GetMapping("/courses/{courseId}/students")
     public ResponseEntity<?> getStudents(@AuthenticationPrincipal User user,
                                          @PathVariable UUID courseId) {
@@ -65,6 +87,7 @@ public class CreatorController {
         return ResponseEntity.ok(students);
     }
 
+    // 🔹 Детальный прогресс конкретного студента по курсу
     @GetMapping("/courses/{courseId}/students/{studentId}/progress")
     public ResponseEntity<?> getStudentProgress(@AuthenticationPrincipal User user,
                                                 @PathVariable UUID courseId,

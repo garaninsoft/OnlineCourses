@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
-public class AuthFilter extends GenericFilter {
+public class AuthFilter implements Filter {
 
     private final UserRepository userRepository;
 
@@ -22,12 +22,22 @@ public class AuthFilter extends GenericFilter {
             throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
-        String header = req.getHeader("Authorization");
 
+        // Пропускаем CORS preflight сразу
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String header = req.getHeader("Authorization");
         if (header != null && header.startsWith("Token ")) {
             String token = header.substring(6);
             userRepository.findByAuthToken(token).ifPresent(user -> {
-                var auth = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                var auth = new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        Collections.emptyList()
+                );
                 SecurityContextHolder.getContext().setAuthentication(auth);
             });
         }
