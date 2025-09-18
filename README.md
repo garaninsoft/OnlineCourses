@@ -19,7 +19,7 @@
 1.  **Клонируй и открывай:**
     ```bash
     git clone <этот-репозиторий>
-    cd spring-courses-demo
+    cd OnlineCourses
     ```
 2.  **Запусти:**
     ```bash
